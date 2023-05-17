@@ -20,7 +20,7 @@ export default function Chat({ route }) {
 
         if (fullName) {
           // Fetch the user's data from the API using their email
-          const response = await axios.get(`http://10.100.102.23:3002/api/users/${fullName}`);
+          const response = await axios.get(`https://young-entreprenuership-app1.onrender.com/api/users/${fullName}`);
           setFullName(response.data.fullName);
         }
 
@@ -46,7 +46,7 @@ export default function Chat({ route }) {
       };
 
       try {
-        await axios.post(`http://10.100.102.23:3002/api/chats`, message);
+        await axios.post(`https://young-entreprenuership-app1.onrender.com/api/chats`, message);
         setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages));
       } catch (error) {
         console.log(error);
@@ -61,7 +61,7 @@ export default function Chat({ route }) {
       };
 
       try {
-        await axios.post(`http://10.100.102.23:3002/api/chats`, message);
+        await axios.post(`https://young-entreprenuership-app1.onrender.com/api/chats`, message);
         setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages));
       } catch (error) {
         console.log(error);

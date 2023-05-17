@@ -18,7 +18,7 @@ export default function ProfileScreen({ isSignedIn }) {
                 const fullName = await AsyncStorage.getItem('@user_fullName');
                 if (fullName) {
                     // Fetch the user's data from the API using their email
-                    const response = await axios.get(`http://192.168.251.2:3002/api/users/${fullName}`);
+                    const response = await axios.get(`https://young-entreprenuership-app1.onrender.com/api/users/${fullName}`);
                     setFullName(response.data.fullName);
                 }
             } catch (error) {

@@ -37,7 +37,7 @@ export default function SignUp() {
         if (!validateForm()) return;
         setLoading(true);
         axios
-            .post(`http://192.168.251.2:3002/api/users`, {
+            .post(`https://young-entreprenuership-app1.onrender.com/api/users`, {
                 fullName: fullName,
                 password: password,
                 isMentor: checked,

@@ -27,7 +27,7 @@ export default function MentorsChat() {
     console.log(sendWhatsapp);
 
     useEffect(() => {
-        axios.get('http://192.168.251.2:3002/api/users')
+        axios.get('https://young-entreprenuership-app1.onrender.com/api/users')
             .then(response => {
                 const filteredUsers = response.data.filter(user => user.isMentor === true);
                 setUsers(filteredUsers);

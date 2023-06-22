@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, ActivityIndicator, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import Onboarding from './screens/onboarding';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from './screens/home';
 import { Ionicons } from 'expo-vector-icons';
+import Entypo from '@expo/vector-icons/Entypo';
 import Chat from './screens/chat';
 import About from './screens/about';
 import Nearhamamot from './screens/nearhamamot';
@@ -19,9 +20,20 @@ import ConfirmEmailScreen from './screens/confirmEmailScreen';
 import ProfileScreen from './screens/profileScreen';
 import Successfull from './screens/successfull';
 import MentorsChat from './screens/mentorsChat';
+import * as SplashScreen from 'expo-splash-screen';
+import LottieView from 'lottie-react-native';
 
-const Loading = () => {
-  <ActivityIndicator size="large" />
+// Define your image source and style
+const splashScreenImage = require('./assets/images/3.png');
+const splashAnimation = require('./assets/145450-mobile-ui-creation.json');
+const splashScreenImageStyle = { width: 50, height: 100 };
+
+function Loading() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <ActivityIndicator size="large" />
+    </View>
+  );
 }
 
 function OnboardingScreen() {
@@ -168,7 +180,23 @@ function MainTabNavigator({ route }) {
 
 
 export default function App() {
+  const [appIsReady, setAppIsReady] = useState(false);
   const [viewedOnboarding, setViewedOnboarding] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate a delay of 5 seconds (adjust as needed)
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+  
+    prepare();
+  }, []);
+  
 
   const checkOnboarding = async () => {
     try {
@@ -185,6 +213,25 @@ export default function App() {
     checkOnboarding();
   }, []);
 
+
+  useEffect(() => {
+    const hideSplashScreen = async () => {
+      if (appIsReady) {
+        await SplashScreen.hideAsync();
+      }
+    };
+  
+    hideSplashScreen();
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <LottieView style={splashScreenImageStyle} source={splashAnimation} autoPlay loop />
+      </View>
+    );
+  }
+  
   return (
     <NavigationContainer>
       {viewedOnboarding ? (

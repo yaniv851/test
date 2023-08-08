@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, SafeAreaView, ActivityIndicator, Image } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, ActivityIndicator, Image, Animated } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -24,8 +24,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import LottieView from 'lottie-react-native';
 
 // Define your image source and style
-const splashScreenImage = require('./assets/images/3.png');
 const splashAnimation = require('./assets/145450-mobile-ui-creation.json');
+const splashScreenImage = require('./assets/logo.png');
 const splashScreenImageStyle = { width: 50, height: 100 };
 
 function Loading() {
@@ -182,6 +182,7 @@ function MainTabNavigator({ route }) {
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   const [viewedOnboarding, setViewedOnboarding] = useState(false);
+  const fadeAnim = useState(new Animated.Value(0))[0];
 
   useEffect(() => {
     async function prepare() {
@@ -193,10 +194,9 @@ export default function App() {
         setAppIsReady(true);
       }
     }
-  
+
     prepare();
   }, []);
-  
 
   const checkOnboarding = async () => {
     try {
@@ -217,21 +217,30 @@ export default function App() {
   useEffect(() => {
     const hideSplashScreen = async () => {
       if (appIsReady) {
-        await SplashScreen.hideAsync();
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }).start(() => {
+          SplashScreen.hideAsync();
+        });
       }
     };
-  
+
     hideSplashScreen();
   }, [appIsReady]);
 
   if (!appIsReady) {
+
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <LottieView style={splashScreenImageStyle} source={splashAnimation} autoPlay loop />
+        <Animated.View>
+          <Image source={splashScreenImage} />
+        </Animated.View>
       </View>
     );
   }
-  
+
   return (
     <NavigationContainer>
       {viewedOnboarding ? (

@@ -8,6 +8,7 @@ import Carousel from 'react-native-snap-carousel';
 import { Video } from 'expo-av';
 import client from '../client';
 import 'react-native-url-polyfill/auto';
+import YoutubePlayer from 'react-native-youtube-iframe';
 
 
 
@@ -31,6 +32,7 @@ function HomeScreen() {
   const [showView2, setShowView2] = useState(false);
   const [showView3, setShowView3] = useState(false);
   const [movies, setMovies] = useState([]);
+  const [links, setLinks] = useState([]);
 
   useEffect(() => {
     client.fetch(
@@ -40,64 +42,146 @@ function HomeScreen() {
         "pic": pic.asset->url,
       }`
     ).then((data) => {
-      setMovies(data);
+      // Separate videos with pic and videos with vidUrl
+      const movieData = data.filter((item) => item.pic);
+      const linkData = data.filter((item) => item.vidUrl && !item.pic);
+
+      setMovies(movieData);
+      setLinks(linkData);
     })
   }, []);
 
-  console.log(movies)
+  console.log(movies);
 
-  const CustomVideoPlayer = ({ source, name }) => {
+  function extractYouTubeVideoId(url) {
+    const pattern = /^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:shorts\/)?(?:embed\/|v\/|watch\?v=|watch\?.+&v=|embed\/videoseries\?list=))([^\s?&/]+)/;
+    const match = url.match(pattern);
+
+    if (match && match[1]) {
+      const videoId = match[1];
+      console.log("YouTube Video ID:", videoId);
+
+      // Check if the link is a YouTube Short
+      const isShortsLink = url.includes("/shorts");
+      if (isShortsLink) {
+        console.log("This is a YouTube Short!");
+      }
+
+      return videoId;
+    } else {
+      console.log("Invalid YouTube URL");
+      return null;
+    }
+  }
+
+  const [currentlyPlayingVideo, setCurrentlyPlayingVideo] = useState(null);
+
+
+  const CustomVideoPlayer = ({ source, name, pic, vidUrl }) => {
     const video = React.useRef(null);
-    const [status, setStatus] = React.useState({});
 
-    const handlePlayPause = () => {
-      if (status.isPlaying) {
-        video.current.pauseAsync();
-      } else {
-        video.current.playAsync();
+
+    // Function to pause the currently playing video
+    const pauseCurrentVideo = async () => {
+      if (currentlyPlayingVideo) {
+        const status = await currentlyPlayingVideo.getStatusAsync();
+        if (status.isPlaying) {
+          await currentlyPlayingVideo.pauseAsync();
+        }
+      }
+    };
+
+    // Function to handle video play
+    const handlePlay = async () => {
+      // Pause the currently playing video (if any)
+      pauseCurrentVideo();
+      // Set the currently playing video to the current video
+      setCurrentlyPlayingVideo(video.current);
+      // Play the current video
+      if (video.current) {
+        await video.current.playAsync();
+        console.log("Video is now playing:", name); // Log when the video starts playing
       }
     };
 
     return (
       <View>
-        <TouchableOpacity onPress={handlePlayPause} style={{alignItems: 'center'}}>
-          <Video
-            ref={video}
-            source={source}
-            resizeMode="cover"
-            style={{ width: '100%', height: 300, borderRadius: 20 }}
-            onPlaybackStatusUpdate={(status) => setStatus(() => status)}
-          />
-          <View
-            style={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              borderRadius: 20,
-              padding: 10,
-            }}
-          >
-            <AntDesign
-              name={status.isPlaying ? 'pause' : 'play'}
-              size={24}
-              color="white"
-            />
-          </View>
-          <Text>{name}</Text>
-        </TouchableOpacity>
-      </View>
+        <Video
+          ref={video}
+          source={{ uri: pic }}
+          resizeMode="cover"
+          style={{ height: 200, borderRadius: 20 }}
+          useNativeControls // This will use the default video player controls
+          onPlaybackStatusUpdate={(status) => {
+            // When the video playback status updates, check if it has finished playing
+            // and reset the currentlyPlayingVideo if it has.
+            if (status.didJustFinish) {
+              pauseCurrentVideo();
+              setCurrentlyPlayingVideo(null);
+            }
+          }}
+        />
+        <Text>{name}</Text>
+      </View >
+    );
+  };
+
+  const CustomLinkPlayer = ({ source, name, vidUrl }) => {
+    const video = React.useRef(null);
+    const [status, setStatus] = React.useState({});
+
+
+    const youtubeVideoId = vidUrl ? extractYouTubeVideoId(vidUrl) : null;
+    console.log(youtubeVideoId)
+
+    return (
+      <View>
+        <YoutubePlayer
+          height={300}
+          width={300}
+          play={false}
+          videoId={youtubeVideoId}
+        />
+        <Text>{name}</Text>
+      </View >
     );
   };
 
 
   // Modify your renderItem function
-  const renderItem = ({ item }) => (
-    <CustomVideoPlayer
-      source={item.pic ? { uri: item.pic } : { uri: item.vidUrl }}
-      name={item.name}
-    />
-  );
+  const renderItem = ({ item }) => {
+    // If pic exists, render the CustomVideoPlayer
+    if (item.pic) {
+      return (
+        <CustomVideoPlayer
+          source={{ uri: item.pic }}
+          name={item.name}
+          pic={item.pic}
+        />
+      );
+    }
+
+    return null; // If pic doesn't exist, don't render anything
+  };
+
+
+  // Modify your renderItem1 function
+  const renderItem1 = ({ item }) => {
+    // If vidUrl exists and pic doesn't exist, render the CustomLinkPlayer
+    if (item.vidUrl && !item.pic) {
+      return (
+        <View style={{ flex: 1 }}>
+          <CustomLinkPlayer
+            source={{ uri: item.vidUrl }}
+            name={item.name}
+            vidUrl={item.vidUrl}
+          />
+        </View>
+      );
+    }
+
+    return null; // If either vidUrl doesn't exist or pic exists, don't render anything
+  };
 
   const handleTouchableOpacityClick = () => {
     setShowView1(true);
@@ -200,17 +284,36 @@ function HomeScreen() {
           <Text>clear</Text>
         </TouchableOpacity> */}
       <Text style={{ color: '#62656b', marginLeft: 30, fontFamily: 'DanaYadAlefAlefAlef', fontSize: 20 }}>תתחילו ליזום!</Text>
-      <View style={{ marginTop: 50 }}>
-        <Carousel
-          data={movies}
-          renderItem={renderItem}
-          sliderWidth={screenWidth}
-          itemWidth={200}
-          windowSize={2}
-          bounces={false}
-          enableSnap={false}
-        />
-      </View>
+      {movies.length > 0 && (
+        <View style={{ marginTop: 50 }}>
+          <Carousel
+            data={movies}
+            renderItem={renderItem}
+            sliderWidth={screenWidth}
+            itemWidth={300}
+            windowSize={2}
+            bounces={false}
+            enableSnap={false}
+          />
+        </View>
+      )}
+
+      {/* Render the carousel only if there are links to display */}
+      {links.length > 0 && (
+        <View style={{ marginTop: 50 }}>
+          <Carousel
+            data={links}
+            renderItem={renderItem1}
+            sliderWidth={screenWidth}
+            itemWidth={300}
+            windowSize={2}
+            bounces={false}
+            enableSnap={false}
+          />
+        </View>
+      )}
+
+      {/* <TouchableOpacity>קבלו גישה לסרטוני פרימיום</TouchableOpacity> */}
 
 
     </ScrollView>

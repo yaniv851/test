@@ -10,9 +10,9 @@ export default {
         title: 'שם הבלוג'
       },
       {
-        name: 'pic',
-        type: 'image',
-        title: 'תמונת המיזם'
+        name: 'txt',
+        type: 'text',
+        title: 'תיאור הבלוג'
       },
       {
         name: 'insta',

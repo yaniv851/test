@@ -21,11 +21,11 @@ import ProfileScreen from './screens/profileScreen';
 import Successfull from './screens/successfull';
 import MentorsChat from './screens/mentorsChat';
 import * as SplashScreen from 'expo-splash-screen';
-import LottieView from 'lottie-react-native';
+import Checkpayment from './screens/Checkpayment';
 
 // Define your image source and style
 const splashAnimation = require('./assets/145450-mobile-ui-creation.json');
-const splashScreenImage = require('./assets/logo.png');
+const splashScreenImage = require('./assets/log.png');
 const splashScreenImageStyle = { width: 50, height: 100 };
 
 function Loading() {
@@ -99,6 +99,7 @@ function NestedStackNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name='nestedH' component={HomeScreen} />
+      <Stack.Screen name='checkpay' component={Checkpayment} />
       <Stack.Screen name='success' component={Successfull} />
       <Stack.Screen name='login' component={SignIn} />
       <Stack.Screen name='sign up' component={SignUp} />

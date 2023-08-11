@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, FlatList, TouchableOpacity, Animated, Image, ScrollView, Dimensions } from 'react-native';
+import { View, Text, SafeAreaView, FlatList, TouchableOpacity, Animated, Image, ScrollView, Dimensions, Button } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AntDesign } from 'expo-vector-icons';
@@ -9,7 +9,7 @@ import { Video } from 'expo-av';
 import client from '../client';
 import 'react-native-url-polyfill/auto';
 import YoutubePlayer from 'react-native-youtube-iframe';
-
+import PremiumButton from '../components/PremiumButton';
 
 
 // const movies = [
@@ -32,6 +32,7 @@ function HomeScreen() {
   const [showView2, setShowView2] = useState(false);
   const [showView3, setShowView3] = useState(false);
   const [movies, setMovies] = useState([]);
+  const [sentence, setSentence] = useState();
   const [links, setLinks] = useState([]);
 
   useEffect(() => {
@@ -51,7 +52,18 @@ function HomeScreen() {
     })
   }, []);
 
-  console.log(movies);
+  useEffect(() => {
+    client.fetch(
+      `*[_type == "sent"] {
+        name,
+        txt,
+      }`
+    ).then((data) => {
+      setSentence(data);
+    })
+  }, []);
+
+  console.log(sentence)
 
   function extractYouTubeVideoId(url) {
     const pattern = /^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:shorts\/)?(?:embed\/|v\/|watch\?v=|watch\?.+&v=|embed\/videoseries\?list=))([^\s?&/]+)/;
@@ -232,7 +244,12 @@ function HomeScreen() {
   return (
     <ScrollView style={{ backgroundColor: 'white', flex: 1, position: "relative" }}>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 8, marginTop: 30 }}>
-        <Text style={{ fontWeight: 'bold', marginBottom: 40, color: '#56A309' }}>הידעת? קטשופ שימש לראשונה כתרופה</Text>
+        {sentence && sentence.length > 0 && (
+          <View style={{ marginBottom: 40 }}>
+            <Text style={{fontWeight: 900, color: '#56A309'}} >{sentence[0].name}</Text>
+            <Text >{sentence[0].txt}</Text>
+          </View>
+        )}
         <TouchableOpacity style={{
           borderRadius: 150,
           width: 250,
@@ -315,7 +332,7 @@ function HomeScreen() {
 
       {/* <TouchableOpacity>קבלו גישה לסרטוני פרימיום</TouchableOpacity> */}
 
-
+      <PremiumButton />
     </ScrollView>
   );
 }

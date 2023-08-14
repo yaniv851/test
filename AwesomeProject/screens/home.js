@@ -1,16 +1,26 @@
-import { View, Text, SafeAreaView, FlatList, TouchableOpacity, Animated, Image, ScrollView, Dimensions, Button } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AntDesign } from 'expo-vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import Carousel from 'react-native-snap-carousel';
-import { Video } from 'expo-av';
-import client from '../client';
-import 'react-native-url-polyfill/auto';
-import YoutubePlayer from 'react-native-youtube-iframe';
-import PremiumButton from '../components/PremiumButton';
-
+import {
+  View,
+  Text,
+  SafeAreaView,
+  FlatList,
+  TouchableOpacity,
+  Animated,
+  Image,
+  ScrollView,
+  Dimensions,
+  Button,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AntDesign } from "expo-vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { useFonts } from "expo-font";
+import Carousel from "react-native-snap-carousel";
+import { Video } from "expo-av";
+import client from "../client";
+import "react-native-url-polyfill/auto";
+import YoutubePlayer from "react-native-youtube-iframe";
+import PremiumButton from "../components/PremiumButton";
 
 // const movies = [
 //   {
@@ -26,47 +36,53 @@ import PremiumButton from '../components/PremiumButton';
 
 function HomeScreen() {
   const navigation = useNavigation();
-  const screenWidth = Dimensions.get('window').width;
+  const screenWidth = Dimensions.get("window").width;
 
   const [showView1, setShowView1] = useState(false);
   const [showView2, setShowView2] = useState(false);
   const [showView3, setShowView3] = useState(false);
+  const [showView4, setShowView4] = useState(false);
   const [movies, setMovies] = useState([]);
   const [sentence, setSentence] = useState();
   const [links, setLinks] = useState([]);
 
   useEffect(() => {
-    client.fetch(
-      `*[_type == "vids"] {
+    client
+      .fetch(
+        `*[_type == "vids"] {
         name,
         vidUrl,
         "pic": pic.asset->url,
       }`
-    ).then((data) => {
-      // Separate videos with pic and videos with vidUrl
-      const movieData = data.filter((item) => item.pic);
-      const linkData = data.filter((item) => item.vidUrl && !item.pic);
+      )
+      .then((data) => {
+        // Separate videos with pic and videos with vidUrl
+        const movieData = data.filter((item) => item.pic);
+        const linkData = data.filter((item) => item.vidUrl && !item.pic);
 
-      setMovies(movieData);
-      setLinks(linkData);
-    })
+        setMovies(movieData);
+        setLinks(linkData);
+      });
   }, []);
 
   useEffect(() => {
-    client.fetch(
-      `*[_type == "sent"] {
+    client
+      .fetch(
+        `*[_type == "sent"] {
         name,
         txt,
       }`
-    ).then((data) => {
-      setSentence(data);
-    })
+      )
+      .then((data) => {
+        setSentence(data);
+      });
   }, []);
 
-  console.log(sentence)
+  console.log(sentence);
 
   function extractYouTubeVideoId(url) {
-    const pattern = /^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:shorts\/)?(?:embed\/|v\/|watch\?v=|watch\?.+&v=|embed\/videoseries\?list=))([^\s?&/]+)/;
+    const pattern =
+      /^(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:shorts\/)?(?:embed\/|v\/|watch\?v=|watch\?.+&v=|embed\/videoseries\?list=))([^\s?&/]+)/;
     const match = url.match(pattern);
 
     if (match && match[1]) {
@@ -88,10 +104,8 @@ function HomeScreen() {
 
   const [currentlyPlayingVideo, setCurrentlyPlayingVideo] = useState(null);
 
-
   const CustomVideoPlayer = ({ source, name, pic, vidUrl }) => {
     const video = React.useRef(null);
-
 
     // Function to pause the currently playing video
     const pauseCurrentVideo = async () => {
@@ -134,7 +148,7 @@ function HomeScreen() {
           }}
         />
         <Text>{name}</Text>
-      </View >
+      </View>
     );
   };
 
@@ -142,9 +156,8 @@ function HomeScreen() {
     const video = React.useRef(null);
     const [status, setStatus] = React.useState({});
 
-
     const youtubeVideoId = vidUrl ? extractYouTubeVideoId(vidUrl) : null;
-    console.log(youtubeVideoId)
+    console.log(youtubeVideoId);
 
     return (
       <View>
@@ -155,10 +168,9 @@ function HomeScreen() {
           videoId={youtubeVideoId}
         />
         <Text>{name}</Text>
-      </View >
+      </View>
     );
   };
-
 
   // Modify your renderItem function
   const renderItem = ({ item }) => {
@@ -175,7 +187,6 @@ function HomeScreen() {
 
     return null; // If pic doesn't exist, don't render anything
   };
-
 
   // Modify your renderItem1 function
   const renderItem1 = ({ item }) => {
@@ -199,15 +210,16 @@ function HomeScreen() {
     setShowView1(true);
     setShowView2(true);
     setShowView3(true);
+    setShowView4(true);
   };
 
   const chatnavi = () => {
-    navigation.navigate("mentors")
-  }
+    navigation.navigate("mentors");
+  };
 
   const [loaded] = useFonts({
     DanaYadAlefAlefAlef: require("../assets/fonts/DanaYadAlefAlefAlef-Normal.ttf"),
-  })
+  });
 
   if (!loaded) {
     return null;
@@ -229,69 +241,147 @@ function HomeScreen() {
 
   const handleodotpress = () => {
     navigation.navigate("אודות");
-  }
+  };
 
   const clearOnboarding = async () => {
     try {
-      await AsyncStorage.removeItem('@viewedOnboarding');
+      await AsyncStorage.removeItem("@viewedOnboarding");
     } catch (err) {
-      console.log('Error @clearOnboarding', err)
+      console.log("Error @clearOnboarding", err);
     }
-  }
-
-
+  };
 
   return (
-    <ScrollView style={{ backgroundColor: 'white', flex: 1, position: "relative" }}>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 8, marginTop: 30 }}>
+    <ScrollView
+      style={{ backgroundColor: "white", flex: 1, position: "relative" }}
+    >
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 8,
+          marginTop: 30,
+        }}
+      >
         {sentence && sentence.length > 0 && (
           <View style={{ marginBottom: 40 }}>
-            <Text style={{fontWeight: 900, color: '#56A309'}} >{sentence[0].name}</Text>
-            <Text >{sentence[0].txt}</Text>
+            <Text style={{ fontWeight: 900, color: "#56A309" }}>
+              {sentence[0].name}
+            </Text>
+            <Text>{sentence[0].txt}</Text>
           </View>
         )}
-        <TouchableOpacity style={{
-          borderRadius: 150,
-          width: 250,
-          height: 250,
-          backgroundColor: '#D36B0D',
-          justifyContent: 'center',
-          alignItems: 'center',
-          elevation: 10,
-          shadowColor: '#000',
-          shadowRadius: 100,
-          shadowOffset: { width: 20, height: 20 },
-        }}
-          onPress={handleTouchableOpacityClick}>
+        <TouchableOpacity
+          style={{
+            borderRadius: 150,
+            width: 250,
+            height: 250,
+            backgroundColor: "#D36B0D",
+            justifyContent: "center",
+            alignItems: "center",
+            elevation: 10,
+            shadowColor: "#000",
+            shadowRadius: 100,
+            shadowOffset: { width: 20, height: 20 },
+          }}
+          onPress={handleTouchableOpacityClick}
+        >
           {/* <Text style={{  }}> */}
-          <Text style={{ fontSize: 40, textAlign: 'center', justifyContent: 'center', color: 'white', fontFamily: 'DanaYadAlefAlefAlef' }}>
+          <Text
+            style={{
+              fontSize: 40,
+              textAlign: "center",
+              justifyContent: "center",
+              color: "white",
+              fontFamily: "DanaYadAlefAlefAlef",
+            }}
+          >
             החממה -
           </Text>
-          <Text style={{ fontSize: 25, textAlign: 'center', justifyContent: 'center', color: 'white', fontFamily: 'DanaYadAlefAlefAlef' }}>
+          <Text
+            style={{
+              fontSize: 25,
+              textAlign: "center",
+              justifyContent: "center",
+              color: "white",
+              fontFamily: "DanaYadAlefAlefAlef",
+            }}
+          >
             רשת חברתית
           </Text>
-          <Text style={{ fontSize: 25, textAlign: 'center', justifyContent: 'center', color: 'white', fontFamily: 'DanaYadAlefAlefAlef' }}>
+          <Text
+            style={{
+              fontSize: 25,
+              textAlign: "center",
+              justifyContent: "center",
+              color: "white",
+              fontFamily: "DanaYadAlefAlefAlef",
+            }}
+          >
             ליזמות חברתית
           </Text>
           {/* </Text> */}
         </TouchableOpacity>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'center', justifyContent: 'center', marginTop: 20, }}>
-          {showView1 &&
-            <Animated.View style={{ width: 70, marginRight: 20, height: 50, position: 'relative', opacity: animatedValue }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            justifyContent: "center",
+            marginTop: 20,
+          }}
+        >
+          {showView1 && (
+            <Animated.View
+              style={{
+                width: 70,
+                marginRight: 20,
+                height: 50,
+                position: "relative",
+                opacity: animatedValue,
+              }}
+            >
               <Text onPress={handleodotpress}>מי אנחנו?</Text>
             </Animated.View>
-          }
-          {showView2 &&
-            <Animated.View style={{ width: 90, marginRight: 20, height: 50, position: 'relative', opacity: animatedValue }} >
+          )}
+          {showView2 && (
+            <Animated.View
+              style={{
+                width: 90,
+                marginRight: 20,
+                height: 50,
+                position: "relative",
+                opacity: animatedValue,
+              }}
+            >
               <Text>החממות שלנו</Text>
             </Animated.View>
-          }
-          {showView3 &&
-            <Animated.View style={{ width: 90, height: 50, position: 'relative', opacity: animatedValue }} >
+          )}
+          {showView3 && (
+            <Animated.View
+              style={{
+                width: 90,
+                height: 50,
+                position: "relative",
+                opacity: animatedValue,
+              }}
+            >
               <Text onPress={chatnavi}>הפנייה לצ'אט</Text>
             </Animated.View>
-          }
+          )}
+          {showView4 && (
+            <Animated.View
+              style={{
+                width: 90,
+                height: 50,
+                position: "relative",
+                opacity: animatedValue,
+              }}
+            >
+              <Text onPress={chatnavi}>YAZAM-AIM </Text>
+            </Animated.View>
+          )}
 
           {/* how can I add here a netflix movie slider */}
         </View>
@@ -300,7 +390,16 @@ function HomeScreen() {
       {/* <TouchableOpacity onPress={clearOnboarding}>
           <Text>clear</Text>
         </TouchableOpacity> */}
-      <Text style={{ color: '#62656b', marginLeft: 30, fontFamily: 'DanaYadAlefAlefAlef', fontSize: 20 }}>תתחילו ליזום!</Text>
+      <Text
+        style={{
+          color: "#62656b",
+          marginLeft: 30,
+          fontFamily: "DanaYadAlefAlefAlef",
+          fontSize: 20,
+        }}
+      >
+        תתחילו ליזום!
+      </Text>
       {movies.length > 0 && (
         <View style={{ marginTop: 50 }}>
           <Carousel
@@ -337,7 +436,6 @@ function HomeScreen() {
   );
 }
 
-
 // const VideoItem = ({ item }) => {
 
 //   return (
@@ -355,6 +453,5 @@ function HomeScreen() {
 //     </View>
 //   );
 // };
-
 
 export default HomeScreen;

@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import OurScreen from './screens/OurScreen';
 import Onboarding from './screens/onboarding';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from './screens/home';
@@ -111,6 +112,7 @@ function NestedStackNavigator() {
       <Stack.Screen name='new password' component={NewPasswordScreen} />
       <Stack.Screen name='confirm' component={ConfirmEmailScreen} />
       <Stack.Screen name='mentors' component={MentorsChat} />
+      <Stack.Screen name='החממות שלנו' component={OurScreen} options={{ headerShown: true }}  />
     </Stack.Navigator>
   )
 }

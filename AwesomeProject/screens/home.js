@@ -22,18 +22,6 @@ import "react-native-url-polyfill/auto";
 import YoutubePlayer from "react-native-youtube-iframe";
 import PremiumButton from "../components/PremiumButton";
 
-// const movies = [
-//   {
-//     image: require('../assets/logo.png'),
-//   },
-//   {
-//     image: require('../assets/logo.png'),
-//   },
-//   {
-//     image: require('../assets/logo.png'),
-//   },
-// ];
-
 function HomeScreen() {
   const navigation = useNavigation();
   const screenWidth = Dimensions.get("window").width;
@@ -41,7 +29,6 @@ function HomeScreen() {
   const [showView1, setShowView1] = useState(false);
   const [showView2, setShowView2] = useState(false);
   const [showView3, setShowView3] = useState(false);
-  const [showView4, setShowView4] = useState(false);
   const [movies, setMovies] = useState([]);
   const [sentence, setSentence] = useState();
   const [links, setLinks] = useState([]);
@@ -210,11 +197,14 @@ function HomeScreen() {
     setShowView1(true);
     setShowView2(true);
     setShowView3(true);
-    setShowView4(true);
   };
 
   const chatnavi = () => {
-    navigation.navigate("mentors");
+    navigation.navigate("Users");
+  };
+
+  const ournavi = () => {
+    navigation.navigate("החממות שלנו");
   };
 
   const [loaded] = useFonts({
@@ -355,7 +345,7 @@ function HomeScreen() {
                 opacity: animatedValue,
               }}
             >
-              <Text>החממות שלנו</Text>
+              <Text onPress={ournavi}>החממות שלנו</Text>
             </Animated.View>
           )}
           {showView3 && (
@@ -368,18 +358,6 @@ function HomeScreen() {
               }}
             >
               <Text onPress={chatnavi}>הפנייה לצ'אט</Text>
-            </Animated.View>
-          )}
-          {showView4 && (
-            <Animated.View
-              style={{
-                width: 90,
-                height: 50,
-                position: "relative",
-                opacity: animatedValue,
-              }}
-            >
-              <Text onPress={chatnavi}>YAZAM-AIM </Text>
             </Animated.View>
           )}
 

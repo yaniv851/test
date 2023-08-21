@@ -9,6 +9,7 @@ import {
   ScrollView,
   Dimensions,
   Button,
+  Pressable,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,7 +21,7 @@ import { Video } from "expo-av";
 import client from "../client";
 import "react-native-url-polyfill/auto";
 import YoutubePlayer from "react-native-youtube-iframe";
-import PremiumButton from "../components/PremiumButton";
+import PayPalPaymentScreen from "../components/PayScreen";
 
 function HomeScreen() {
   const navigation = useNavigation();
@@ -32,6 +33,23 @@ function HomeScreen() {
   const [movies, setMovies] = useState([]);
   const [sentence, setSentence] = useState();
   const [links, setLinks] = useState([]);
+
+  const [hasPaid, setHasPaid] = useState(false);
+
+  useEffect(() => {
+    // Fetch the "hasPaid" value from AsyncStorage
+    AsyncStorage.getItem("hasPaid")
+      .then((value) => {
+        if (value === "true") {
+          setHasPaid(true);
+        } else {
+          setHasPaid(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching hasPaid value:", error);
+      });
+  }, []);
 
   useEffect(() => {
     client
@@ -241,6 +259,16 @@ function HomeScreen() {
     }
   };
 
+  // Function to handle clearing AsyncStorage data
+  const handleClearStorage = async () => {
+    try {
+      await AsyncStorage.removeItem("hasPaid");
+      console.log("AsyncStorage data cleared");
+    } catch (error) {
+      console.log("Error clearing AsyncStorage data:", error);
+    }
+  };
+
   return (
     <ScrollView
       style={{ backgroundColor: "white", flex: 1, position: "relative" }}
@@ -409,7 +437,34 @@ function HomeScreen() {
 
       {/* <TouchableOpacity>קבלו גישה לסרטוני פרימיום</TouchableOpacity> */}
 
-      <PremiumButton />
+      {hasPaid ? (
+        <View>
+          {/* Render your button here */}
+          <Button
+            title="לקורס דיגיטלי"
+            onPress={() => {
+              // Handle the action you want to perform when the button is clicked
+              navigation.navigate("קורס דיגיטלי");
+            }}
+          />
+        </View>
+      ) : (
+        <PayPalPaymentScreen />
+      )}
+
+      {/* <Pressable
+        onPress={handleClearStorage}
+        style={{
+          marginTop: 15,
+          backgroundColor: "#D36B0D",
+          padding: 10,
+          borderRadius: 6,
+        }}
+      >
+        <Text style={{ color: "white", fontSize: 16, textAlign: "center" }}>
+          Clear AsyncStorage Data
+        </Text>
+      </Pressable> */}
     </ScrollView>
   );
 }

@@ -11,7 +11,7 @@ const User = ({ item }) => {
     const fetchFriendRequests = async () => {
       try {
         const response = await fetch(
-          `http://10.100.102.88:8000/friend-requests/sent/${userId}`
+          `https://hostingtohamamaapp3.onrender.com/friend-requests/sent/${userId}`
         );
 
         const data = await response.json();
@@ -31,7 +31,7 @@ const User = ({ item }) => {
   useEffect(() => {
     const fetchUserFriends = async () => {
       try {
-        const response = await fetch(`http://10.100.102.88:8000/friends/${userId}`);
+        const response = await fetch(`https://hostingtohamamaapp3.onrender.com/friends/${userId}`);
 
         const data = await response.json();
 
@@ -49,7 +49,7 @@ const User = ({ item }) => {
   }, []);
   const sendFriendRequest = async (currentUserId, selectedUserId) => {
     try {
-      const response = await fetch("http://10.100.102.88:8000/friend-request", {
+      const response = await fetch("https://hostingtohamamaapp3.onrender.com/friend-request", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

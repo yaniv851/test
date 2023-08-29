@@ -42,7 +42,7 @@ const LoginScreen = () => {
     };
 
     axios
-      .post("http://10.100.102.88:8000/login", user)
+      .post("https://hostingtohamamaapp3.onrender.com/login", user)
       .then((response) => {
         console.log(response);
         const token = response.data.token;

@@ -27,7 +27,7 @@ const RegisterScreen = () => {
 
     // send a POST  request to the backend API to register the user
     axios
-      .post("http://10.100.102.88:8000/register", user)
+      .post("https://hostingtohamamaapp3.onrender.com/register", user)
       .then((response) => {
         console.log(response);
         Alert.alert(

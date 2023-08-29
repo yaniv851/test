@@ -56,7 +56,7 @@ const UsersScreen = () => {
       setUserId(userId);
 
       axios
-        .get(`http://10.100.102.88:8000/users/${userId}`)
+        .get(`https://hostingtohamamaapp3.onrender.com/users/${userId}`)
         .then((response) => {
           setUsers(response.data);
         })

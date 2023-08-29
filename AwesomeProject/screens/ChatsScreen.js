@@ -13,7 +13,7 @@ const ChatsScreen = () => {
     const acceptedFriendsList = async () => {
       try {
         const response = await fetch(
-          `http://10.100.102.88:8000/accepted-friends/${userId}`
+          `https://hostingtohamamaapp3.onrender.com/accepted-friends/${userId}`
         );
         const data = await response.json();
 

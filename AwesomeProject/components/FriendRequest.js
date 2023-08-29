@@ -9,7 +9,7 @@ const FriendRequest = ({ item, friendRequests, setFriendRequests }) => {
   const acceptRequest = async (friendRequestId) => {
     try {
       const response = await fetch(
-        "http://10.100.102.88:8000/friend-request/accept",
+        "https://hostingtohamamaapp3.onrender.com/friend-request/accept",
         {
           method: "POST",
           headers: {

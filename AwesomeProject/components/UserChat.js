@@ -10,7 +10,7 @@ const UserChat = ({ item }) => {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `http://10.100.102.88:8000/messages/${userId}/${item._id}`
+        `https://hostingtohamamaapp3.onrender.com/messages/${userId}/${item._id}`
       );
       const data = await response.json();
 

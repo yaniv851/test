@@ -438,7 +438,8 @@ function HomeScreen() {
 
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text style={{ marginTop: 20, fontWeight: "bold", fontSize: 20 }}>
-          קבלו גישה לסרטוני פרימיום
+          ברוכים הבאים לחממה הדיגיטלית! תהליך אונליין מקיף להקמת מיזם חברתי
+          פעיל, רווחי ותורם לקהילה. הקורס פתוח עבורכם מתי שרק תרצו
         </Text>
 
         <Text style={{ marginTop: 10, marginBottom: 10, textAlign: "center" }}>

@@ -69,7 +69,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Users" component={UsersScreen} />
         <Stack.Screen name="קורס דיגיטלי" component={PremiumScreen} />
 
-        <Stack.Screen name="Friends" component={FriendsScreen} />
+        <Stack.Screen name="Friend requests" component={FriendsScreen} />
         <Stack.Screen name="אודות" options={{ headerShown: true }} component={About} />
 
         <Stack.Screen name="Chats" component={ChatsScreen} />

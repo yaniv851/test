@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import React, { useLayoutEffect, useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,7 +20,8 @@ const UsersScreen = () => {
   const navigation = useNavigation();
   const { userId, setUserId } = useContext(UserType);
   const [users, setUsers] = useState([]);
-  // Function to handle clearing AsyncStorage data
+  const [loading, setLoading] = useState(true); // State for loading
+
   const handleClearStorage = async () => {
     try {
       await AsyncStorage.removeItem("authToken");
@@ -23,30 +31,38 @@ const UsersScreen = () => {
     }
   };
 
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: "",
       headerLeft: () => (
-        <Text style={{ fontSize: 16, fontWeight: "bold" }}>Swift Chat</Text>
+        <Text style={{ fontSize: 16, fontWeight: "bold", color: 'orange' }}>Swift Chat</Text>
       ),
       headerRight: () => (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <MaterialIcons
-            onPress={() => navigation.navigate("Friends")}
-            name="people-outline"
+            onPress={() => navigation.navigate("Friend requests")}
+            name="people"
             size={24}
-            color="black"
+            color="orange"
           />
           <MaterialIcons
             onPress={() => navigation.navigate("Chats")}
             name="chat"
             size={24}
-            color="black"
+            color="orange"
+          />
+          <MaterialIcons
+            onPress={() => navigation.navigate("Home")}
+            name="home"
+            size={24}
+            color="orange"
           />
         </View>
       ),
     });
   }, []);
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -59,9 +75,11 @@ const UsersScreen = () => {
         .get(`https://hostingtohamamaapp3.onrender.com/users/${userId}`)
         .then((response) => {
           setUsers(response.data);
+          setLoading(false); // Update loading state after data fetch
         })
         .catch((error) => {
           console.log("error retrieving users", error);
+          setLoading(false); // Update loading state in case of error
         });
     };
 
@@ -70,30 +88,49 @@ const UsersScreen = () => {
 
   console.log("users", users);
   return (
-    <View>
-      <View style={{ padding: 10 }}>
-        {users.map((item, index) => (
-          <User key={index} item={item} />
-        ))}
-      </View>
+    <View style={{ flex: 1, justifyContent: "center" }}>
+      {loading ? ( // Display loading screen if loading is true
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="orange" />
+          <Text>טוען...</Text>
+        </View>
+      ) : (
+        // Display user list if loading is false
+        <View>
+          <ScrollView>
+            {/* Display each user using the User component */}
+            <View style={{ padding: 10 }}>
+              {users.map((item, index) => (
+                <User key={index} item={item} />
+              ))}
+            </View>
+          </ScrollView>
 
-      <Pressable
-        onPress={handleClearStorage}
-        style={{
-          marginTop: 15,
-          backgroundColor: "red",
-          padding: 10,
-          borderRadius: 6,
-        }}
-      >
-        <Text style={{ color: "white", fontSize: 16, textAlign: "center" }}>
-          Clear AsyncStorage Data
-        </Text>
-      </Pressable>
+          {/* <Pressable
+            onPress={handleClearStorage}
+            style={{
+              marginTop: 15,
+              backgroundColor: "red",
+              padding: 10,
+              borderRadius: 6,
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 16, textAlign: "center" }}>
+              Clear AsyncStorage Data
+            </Text>
+          </Pressable> */}
+        </View>
+      )}
     </View>
   );
 };
 
 export default UsersScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

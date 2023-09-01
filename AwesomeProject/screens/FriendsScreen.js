@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import React, { useEffect, useContext, useState } from "react";
 import axios from "axios";
 import { UserType } from "../UserContext";

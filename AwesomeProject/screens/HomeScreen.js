@@ -10,6 +10,7 @@ import {
   Dimensions,
   Button,
   Pressable,
+  Linking,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -435,12 +436,37 @@ function HomeScreen() {
         </View>
       )}
 
-      {/* <TouchableOpacity>קבלו גישה לסרטוני פרימיום</TouchableOpacity> */}
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ marginTop: 20, fontWeight: "bold", fontSize: 20 }}>
+          קבלו גישה לסרטוני פרימיום
+        </Text>
+
+        <Text style={{ marginTop: 10, marginBottom: 10, textAlign: "center" }}>
+          לחצו על הכפתור הזה, לאחר שתשלמו תעתיקו את מספר ההזמנה ולאחר מכן הדביקו
+          אותו פה למטה
+        </Text>
+      </View>
+
+      <View style={{ marginBottom: 10 }}>
+        <Button
+          title="לחצו לתשלום"
+          color="#D36B0D"
+          onPress={() => {
+            const websiteUrl = "https://hahamama.netlify.app/";
+
+            // Open the website URL in the default browser
+            Linking.openURL(websiteUrl).catch((err) =>
+              console.error("An error occurred: ", err)
+            );
+          }}
+        />
+      </View>
 
       {hasPaid ? (
         <View>
           {/* Render your button here */}
           <Button
+            color="#56A309"
             title="לקורס דיגיטלי"
             onPress={() => {
               // Handle the action you want to perform when the button is clicked

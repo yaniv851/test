@@ -137,7 +137,7 @@ const RegisterScreen = () => {
 
           <View style={{ marginTop: 10 }}>
             <Text style={{ fontSize: 18, fontWeight: "600", color: "gray" }}>
-              Image
+              tell us about yourself in short
             </Text>
 
             <TextInput
@@ -151,7 +151,7 @@ const RegisterScreen = () => {
                 width: 300,
               }}
               placeholderTextColor={"black"}
-              placeholder="Image"
+              placeholder="short description..."
             />
           </View>
 

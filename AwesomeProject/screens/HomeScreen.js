@@ -374,7 +374,7 @@ function HomeScreen() {
                 opacity: animatedValue,
               }}
             >
-              <Text onPress={ournavi}>החממות שלנו</Text>
+              <Text onPress={ournavi}>בלוג</Text>
             </Animated.View>
           )}
           {showView3 && (

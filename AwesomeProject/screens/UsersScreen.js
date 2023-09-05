@@ -106,7 +106,7 @@ const UsersScreen = () => {
             </View>
           </ScrollView>
 
-          <Pressable
+          {/* <Pressable
             onPress={handleClearStorage}
             style={{
               marginTop: 15,
@@ -118,7 +118,7 @@ const UsersScreen = () => {
             <Text style={{ color: "white", fontSize: 16, textAlign: "center" }}>
               Clear AsyncStorage Data
             </Text>
-          </Pressable>
+          </Pressable> */}
         </View>
       )}
     </View>
